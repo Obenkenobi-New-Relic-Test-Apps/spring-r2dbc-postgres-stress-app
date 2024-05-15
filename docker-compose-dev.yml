@@ -1,0 +1,35 @@
+version: '3.9'
+
+services:
+  postgres:
+    image: postgres:14-alpine
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./.volumes/postgres:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_PASSWORD=local
+      - POSTGRES_USER=local
+      - POSTGRES_DB=flyway-test-db
+  postgres-app-repro:
+    container_name: postgres-app-repro
+    image: postgres-app-repro:latest
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./.volumes/postgres:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_URL=postgres:5432/flyway-test-db
+    depends_on:
+      - postgres
+  postgres-app-fix:
+    container_name: postgres-app-fix
+    image: postgres-app-fix:latest
+    ports:
+      - "8081:8080"
+    volumes:
+      - ./.volumes/postgres:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_URL=postgres:5432/flyway-test-db
+    depends_on:
+      - postgres
