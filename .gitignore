@@ -40,3 +40,5 @@ out/
 .volumes/
 /newrelic/newrelic.yml
 /newrelicfix/newrelic.yml
+
+secrets/
