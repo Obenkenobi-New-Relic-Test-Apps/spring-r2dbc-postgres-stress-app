@@ -2,11 +2,11 @@ spring:
   application:
     name: "r2dbc-postgres-100-memleak"
   r2dbc:
-    username: {postgres.username:local}
-    password: {postgres.password:local}
+    username: ${postgres.username:local}
+    password: ${postgres.password:local}
     url: r2dbc:postgresql://${postgres.url:localhost:5432/flyway-test-db}
   flyway:
     url: jdbc:postgresql://${postgres.url:localhost:5432/flyway-test-db}
     locations: classpath:db/migration
-    password: {postgres.password:local}
-    user: {postgres.username:local}
+    password: ${postgres.password:local}
+    user: ${postgres.username:local}
