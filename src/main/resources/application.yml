@@ -1,3 +1,5 @@
+server:
+  port: ${appserver.port:8080}
 spring:
   application:
     name: "r2dbc-postgres-100-memleak"

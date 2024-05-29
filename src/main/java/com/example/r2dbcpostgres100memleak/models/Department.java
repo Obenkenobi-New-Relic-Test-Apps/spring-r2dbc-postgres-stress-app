@@ -4,10 +4,10 @@ import org.springframework.data.annotation.Id;
 
 public class Department {
     @Id
-    private String id;
+    private Integer id;
     private String name;
 
-    public Department(String id, String name) {
+    public Department(Integer id, String name) {
         this.id = id;
         this.name = name;
     }
@@ -15,11 +15,11 @@ public class Department {
     public Department() {
     }
 
-    public String getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

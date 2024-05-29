@@ -42,3 +42,5 @@ out/
 /newrelicfix/newrelic.yml
 
 secrets/
+/newrelic/newrelic.log
+/newrelicfix/newrelic.log

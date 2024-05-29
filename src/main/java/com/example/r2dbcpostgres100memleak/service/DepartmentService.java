@@ -27,7 +27,7 @@ public class DepartmentService {
         this.departmentRepo = departmentRepo;
     }
 
-    @Scheduled(fixedRate = 10)
+    @Scheduled(fixedRate = 100)
     @Trace(dispatcher = true, metricName = "retrieveAndLogData")
     public void retrieveAndLogData() {
         log.info("start retrieveAndLogData txn {}", NewRelic.getAgent().getTransaction());
@@ -39,7 +39,7 @@ public class DepartmentService {
         }), err -> handleError(err, token));
     }
 
-    @Scheduled(fixedRate = 10)
+    @Scheduled(fixedRate = 100)
     @Trace(dispatcher = true, metricName = "retrieveAndLogCSData")
     public void retrieveAndLogCSData() {
         log.info("start retrieveAndLogCSData txn {}", NewRelic.getAgent().getTransaction());
@@ -53,7 +53,7 @@ public class DepartmentService {
                 }), err -> handleError(err, token));
     }
 
-    @Scheduled(fixedRate = 15)
+    @Scheduled(fixedRate = 150)
     @Trace(dispatcher = true, metricName = "retrieveAndLogEngDataQuery")
     public void retrieveAndLogCSDataQuery() {
         log.info("start retrieveAndLogEngDataQuery txn {}", NewRelic.getAgent().getTransaction());
@@ -67,7 +67,7 @@ public class DepartmentService {
                 }), err -> handleError(err, token));
     }
 
-    @Scheduled(fixedRate = 20)
+    @Scheduled(fixedRate = 2000)
     @Trace(dispatcher = true, metricName = "insertDocStoredProc")
     public void insertDocStoredProc() {
         log.info("start insertDocStoredProc txn {}", NewRelic.getAgent().getTransaction());
@@ -81,28 +81,26 @@ public class DepartmentService {
                 }), err -> handleError(err, token));
     }
 
-    @Trace(dispatcher = true, metricName = "refreshData")
-    @Scheduled(fixedRate = 50)
-    public void refreshData() {
-        log.info("start refreshData txn {}", NewRelic.getAgent().getTransaction());
+    @Trace(dispatcher = true, metricName = "deleteData")
+    @Scheduled(fixedRate = 5000)
+    public void deleteData() {
+        log.info("start deleteData txn {}", NewRelic.getAgent().getTransaction());
         Token token = NewRelic.getAgent().getTransaction().getToken();
-        deleteAll().doOnError(err -> handleError(err, token))
-                .map(ignored -> 0)
-                .defaultIfEmpty(0)
-                .doOnError(err -> handleError(err, token))
-                .flatMap(ignored -> {
-                    token.link();
-                    log.info("Deleted all data");
-                    log.info("refreshData txn (delete all) {}", NewRelic.getAgent().getTransaction());
-                    return insertMany().collectList();
-                })
-                .subscribe(list -> handleSubscribe(token, () -> {
-                    List<String> strVals = list.stream()
-                            .map(Objects::toString)
-                            .collect(Collectors.toList());
-                    log.info("Saved data {}", strVals);
-                    log.info("refreshData txn (saved data {}", NewRelic.getAgent().getTransaction());
-                }), err -> handleError(err, token));
+        deleteAll().subscribe(list -> handleSubscribe(token, () -> {
+            log.info("deleteData {}", NewRelic.getAgent().getTransaction());
+        }), err -> handleError(err, token));
+    }
+
+    @Trace(dispatcher = true, metricName = "bulkInsert")
+    @Scheduled(fixedRate = 1000)
+    public void bulkInsert() {
+        log.info("start bulkInsert txn {}", NewRelic.getAgent().getTransaction());
+        Token token = NewRelic.getAgent().getTransaction().getToken();
+        insertMany().collectList().subscribe(list -> handleSubscribe(token, () -> {
+            List<String> strVals = list.stream().map(Objects::toString).collect(Collectors.toList());
+            log.info("Saved data {}", strVals);
+            log.info("bulkInsert txn (saved data {}", NewRelic.getAgent().getTransaction());
+        }), err -> handleError(err, token));
     }
 
     public Mono<Void> deleteAll() {
