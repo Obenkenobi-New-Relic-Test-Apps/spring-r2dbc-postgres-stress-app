@@ -27,7 +27,7 @@ public class DepartmentService {
         this.departmentRepo = departmentRepo;
     }
 
-    @Scheduled(fixedRate = 100)
+    @Scheduled(fixedRate = 5)
     @Trace(dispatcher = true, metricName = "retrieveAndLogData")
     public void retrieveAndLogData() {
         log.info("start retrieveAndLogData txn {}", NewRelic.getAgent().getTransaction());
@@ -39,7 +39,7 @@ public class DepartmentService {
         }), err -> handleError(err, token));
     }
 
-    @Scheduled(fixedRate = 100)
+    @Scheduled(fixedRate = 5)
     @Trace(dispatcher = true, metricName = "retrieveAndLogCSData")
     public void retrieveAndLogCSData() {
         log.info("start retrieveAndLogCSData txn {}", NewRelic.getAgent().getTransaction());
@@ -53,7 +53,7 @@ public class DepartmentService {
                 }), err -> handleError(err, token));
     }
 
-    @Scheduled(fixedRate = 150)
+    @Scheduled(fixedRate = 15)
     @Trace(dispatcher = true, metricName = "retrieveAndLogEngDataQuery")
     public void retrieveAndLogCSDataQuery() {
         log.info("start retrieveAndLogEngDataQuery txn {}", NewRelic.getAgent().getTransaction());
@@ -67,7 +67,7 @@ public class DepartmentService {
                 }), err -> handleError(err, token));
     }
 
-    @Scheduled(fixedRate = 2000)
+    @Scheduled(fixedRate = 200)
     @Trace(dispatcher = true, metricName = "insertDocStoredProc")
     public void insertDocStoredProc() {
         log.info("start insertDocStoredProc txn {}", NewRelic.getAgent().getTransaction());
@@ -82,7 +82,7 @@ public class DepartmentService {
     }
 
     @Trace(dispatcher = true, metricName = "deleteData")
-    @Scheduled(fixedRate = 5000)
+    @Scheduled(fixedRate = 500)
     public void deleteData() {
         log.info("start deleteData txn {}", NewRelic.getAgent().getTransaction());
         Token token = NewRelic.getAgent().getTransaction().getToken();
@@ -92,7 +92,7 @@ public class DepartmentService {
     }
 
     @Trace(dispatcher = true, metricName = "bulkInsert")
-    @Scheduled(fixedRate = 1000)
+    @Scheduled(fixedRate = 100)
     public void bulkInsert() {
         log.info("start bulkInsert txn {}", NewRelic.getAgent().getTransaction());
         Token token = NewRelic.getAgent().getTransaction().getToken();
